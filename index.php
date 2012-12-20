@@ -25,7 +25,7 @@ function addCapabilities($folder, &$conf)
     
             require_once($folder . '/' . $plugin . '/capabilities/' . $capability);
     
-            $class = split('\.',$capability)[0];
+            $class = explode('.',$capability)[0];
             $name = $class::$name;
             $conf[$folder]['capabilities'][$name] = $class;
         }
