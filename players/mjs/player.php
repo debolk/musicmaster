@@ -29,7 +29,19 @@ class MJSPlayer extends Tonic\Resource {
      */
     function get($name)
     {
-        return $name;
+        $res = array();
+        $res['name'] = $name;
+        $res['capabilities'] = array();
+
+        foreach(self::$capabilities as $capability)
+        {
+            $c = array();
+            $c['name'] = $capability;
+            $c['url'] = $this->app->uri($this->conf['players']['capabilities'][$capability]);
+            $res['capabilities'][] = $c;
+        }
+
+        return json_encode($res);
     }
 
     /**
