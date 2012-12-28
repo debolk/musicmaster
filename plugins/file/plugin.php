@@ -13,7 +13,7 @@ Class FilePlugin extends Tonic\Resource {
     function initialize($name){
         $this->settings = @$this->conf['plugins'][$name];
         if($this->settings['class'] != __CLASS__)
-            throw new Exception;
+            throw new Tonic\NotFoundException;
     }
 
     /**
@@ -28,7 +28,7 @@ Class FilePlugin extends Tonic\Resource {
         $res['description'] = 'Filesystem plugin';
         $res['common-name'] = $name;
         $res['settings'] = $this->settings;
-        return json_encode($res, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        return json_encode($res, JSON_PRETTY_PRINT);
     }
 
     /**
@@ -40,28 +40,72 @@ Class FilePlugin extends Tonic\Resource {
     function browse($name, $func, $file = '')
     {
         $this->initialize($name);
-        $path = realpath($this->settings['path']) . '/' . $file;
-        $real = realpath($path);
 
-        if($path != $real)
-            return "$path,$real";
-            //throw new Tonic\NotFoundException;
+        //Put extension at end of filename again
+        $type = array_search($this->request->accept[0], $this->request->mimetypes);
+        if($type != 'html')
+            $file .= '.' . $type;
 
-        if(is_dir($real))
+        //Check if requested url is within the base path
+        $basepath = realpath($this->settings['path']);
+        $path = $basepath;
+        if($file != '')
+            $path .= '/' . $file;
+        $path = realpath($path);
+
+        if($path && $basepath && substr_compare($path, $basepath, 0, strlen($basepath)) != 0)
+            throw new Tonic\NotFoundException;
+
+        //Handle directories
+        if(is_dir($path))
         {
             $entries = array();
-            $names = scandir($real);
-            foreach($names as $path)
+            $names = scandir($path);
+            foreach($names as $filename)
             {
-                if($path[0] == '.')
+                if($filename[0] == '.')
                     continue;
-                $entry = $this->app->uri(__CLASS__, array($name, $func, $file . '/' . $path));
-                if(is_dir($real . '/' . $path))
+                $entry = $this->app->uri(__CLASS__, array($name, $func));
+                if($file != '')
+                    $entry .= '/' . $file;
+                $entry .= '/' . $filename;
+                if(is_dir($path . '/' . $filename))
                     $entry .= '/';
                 $entries[] = $entry;
             }
-            return json_encode($entries, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+            $res = array();
+            $res['type'] = 'directory';
+            $res['name'] = 'unknown';
+            $res['entries'] = $entries;
+            return json_encode($res, JSON_PRETTY_PRINT);
         }
+
+        //Handle mp3 files
+        if(is_file($path))
+        {
+            //Create new songinfo
+            $tags = $this->getID3Tags($path);
+            $res = new Song($path, $tags['title'], $tags['artist']); 
+            $res->album = $tags['album'];
+            return $res->toJSON();
+        }
+
+        throw new Tonic\NotFoundException;
+    }
+
+    /**
+     * Returns ID3 tags of a given filename as an associative array
+     */
+    function getID3Tags($filename)
+    {
+        exec("mp3info -p \"%t\n%a\n%l\n\" " . escapeshellarg($filename), $tags);
+        $res = array(
+            'title' => $tags[0],
+            'artist' => $tags[1],
+            'album' => $tags[2],
+        );
+        return $res;
     }
 
     /**

@@ -42,6 +42,7 @@ addCapabilities('players', $conf);
 $config = array(
     'load' => array(
         'controllers/*.php',
+        'models/*.php',
         'players/*/player.php',
         'players/*/capabilities/*.php',
         'plugins/*/plugin.php',

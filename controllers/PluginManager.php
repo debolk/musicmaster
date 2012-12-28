@@ -31,6 +31,6 @@ class PluginManager extends Tonic\Resource {
         $res['description'] = "Currently registered plugins, applications should ignore plugins that don't have a supported capability.";
         $res['plugins'] = $plugins;
 
-        return json_encode($res, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        return json_encode($res, JSON_PRETTY_PRINT);
     }
 }

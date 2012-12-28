@@ -31,6 +31,6 @@ class PlayerManager extends Tonic\Resource {
         $res['description'] = "Currently registered players, applications should ignore players that don't have a supported capability.";
         $res['players'] = $players;
 
-        return json_encode($res, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        return json_encode($res, JSON_PRETTY_PRINT);
     }
 }
