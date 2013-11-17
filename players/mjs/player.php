@@ -21,6 +21,19 @@ class MJSPlayer extends Tonic\Resource {
     }
 
     /**
+	 * @method OPTIONS
+	 * Returns acceptible methods
+	 */
+	public function options()
+	{
+		$response = new Tonic\Response(200, "");
+		$response->Allow = "GET,HEAD,POST,PUT,PATCH";
+        $response->AccessControlAllowMethods = "GET,HEAD,POST,PUT,PATCH";
+        $response->AccessControlAllowHeaders = "Content-Type";
+		return $response;
+	}
+
+    /**
      * Show basic info about player
      * @method GET
      * @init
@@ -66,17 +79,17 @@ class MJSPlayer extends Tonic\Resource {
      */
     function putStatus($name, $func)
     {
-        $data = json_decode($this->request->data);
+	$data = json_decode($this->request->data);
 
-        $accept = array('playing', 'stopped', 'paused');
+	$accept = array('playing', 'stopped', 'paused');
         if(!in_array($data->status, $accept))
             throw new Tonic\ConditionException;
 
         $request = json_encode(array('status' => $data->status));
 
-        $this->request('status', 'POST', $request);
+	print_r($this->request('status', 'POST', $request));
 
-        return '';
+        return $this->getStatus($name, $func);
     }
 
     /**
@@ -115,14 +128,15 @@ class MJSPlayer extends Tonic\Resource {
         $data = json_decode($this->request->data);
 
         $accept = array('next', 'previous');
-        if(!in_array($data->status, $accept))
+        if(!in_array($data->action, $accept))
             throw new Tonic\ConditionException;
 
-        $request = json_encode(array('status' => $data->status));
+        $request = json_encode(array('status' => $data->action));
 
-        request('current', 'POST', $request);
+        $this->request('current', 'POST', $request);
+        sleep(0.1); //HACK: to prevent segfault in MJS
 
-        return '';
+        return getCurrent($name, $func);
     }
 
     /**
@@ -134,7 +148,8 @@ class MJSPlayer extends Tonic\Resource {
      */
     function putCurrent($name, $func)
     {
-        $uid = explode('/', $this->request->data);
+        $json = json_decode($this->request->data);
+        $uid = explode('/', $json->uri);
         $uid = $uid[count($uid) - 1];
 
         if($this->request->data != $this->app->uri('MJSPlayer', array($name, 'playlist', $uid)))
@@ -157,7 +172,6 @@ class MJSPlayer extends Tonic\Resource {
     function getPlaylist($name, $func)
     {
         $data = json_decode($this->request('playlist'));
-        print_r($this->request('playlist'));
         if(!isset($data->files))
             throw new Tonic\Exception;
 
@@ -200,7 +214,8 @@ class MJSPlayer extends Tonic\Resource {
      */
     function postPlaylist($name, $func)
     {
-        $url = $this->request->data;
+        $json = json_decode($this->request->data);
+        $url = $json->uri;
         $song = $this->getObject($url);
 
         if($song->type != 'song')
@@ -291,7 +306,7 @@ class MJSPlayer extends Tonic\Resource {
      */
     function request($url, $method = 'GET', $data = '')
     {
-        $curl = curl_init($this->settings['url'] . $url);
+	$curl = curl_init($this->settings['url'] . $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
         if($data != '')
@@ -299,7 +314,11 @@ class MJSPlayer extends Tonic\Resource {
             curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
             curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Length: ' . strlen($data)));
         }
-        return curl_exec($curl);
+	$result = curl_exec($curl);
+	if(!$result)
+		return curl_error($curl);
+
+	return $result;
     }
 
     /**

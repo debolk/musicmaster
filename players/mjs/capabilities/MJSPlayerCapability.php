@@ -15,7 +15,7 @@ class MJSPlayerCapability extends Tonic\Resource {
             ),
             'PUT' => array(
                 'description' => 'Puts the playback state of the player (playing, paused, stopped)',
-                'data' => 'playing / paused / stopped',
+                'data' => '{ "status": "[playing / paused / stopped]" }',
             ),
         ),
         'current' => array(
@@ -24,11 +24,11 @@ class MJSPlayerCapability extends Tonic\Resource {
             ),
             'POST' => array(
                 'description' => 'Skip to previous / next song',
-                'data' => 'next / previous',
+                'data' => '{ "action": "[next / previous]" }',
             ),
             'PUT' => array(
                 'description' => 'Skip to given playlist item',
-                'data' => 'playlist item uri',
+                'data' => '{ "uri": "[playlist item uri]" }',
             ),
         ),
         'playlist' => array(
@@ -38,7 +38,7 @@ class MJSPlayerCapability extends Tonic\Resource {
             ),
             'POST' => array(
                 'description' => 'Append a song to the playlist',
-                'data' => 'Song uri',
+                'data' => '{ "uri": "[song uri]" }',
             ),
             'DELETE' => array(
                 'description' => 'Clear playlist'
@@ -50,7 +50,7 @@ class MJSPlayerCapability extends Tonic\Resource {
             ),
             'POST' => array(
                 'description' => 'Append a song to the playlist before this item',
-                'data' => 'Song uri',
+                'data' => '{ "uri": "[song uri]" }',
             ),
         ),
     );

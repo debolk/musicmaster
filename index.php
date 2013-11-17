@@ -86,5 +86,7 @@ try {
 }
 
 #echo $response;
+$response->contentType = 'application/json';
+$response->AccessControlAllowOrigin = '*';
 
 $response->output();
