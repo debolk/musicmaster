@@ -27,9 +27,9 @@ class MJSPlayer extends Tonic\Resource {
 	public function options()
 	{
 		$response = new Tonic\Response(200, "");
-		$response->Allow = "GET,HEAD,POST,PUT,PATCH";
-        $response->AccessControlAllowMethods = "GET,HEAD,POST,PUT,PATCH";
-        $response->AccessControlAllowHeaders = "Content-Type";
+		$response->allow = "GET,HEAD,POST,PUT,PATCH";
+        $response->accessControlAllowMethods = "GET,HEAD,POST,PUT,PATCH";
+        $response->accessControlAllowHeaders = "Content-Type";
 		return $response;
 	}
 
@@ -133,10 +133,9 @@ class MJSPlayer extends Tonic\Resource {
 
         $request = json_encode(array('status' => $data->action));
 
-        $this->request('current', 'POST', $request);
-        sleep(0.1); //HACK: to prevent segfault in MJS
+        $this->request('status', 'POST', $request);
 
-        return getCurrent($name, $func);
+        return $this->getCurrent($name, $func);
     }
 
     /**
