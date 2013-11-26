@@ -47,6 +47,7 @@ $config = array(
         'players/*/capabilities/*.php',
         'plugins/*/plugin.php',
         'plugins/*/capabilities/*.php',
+        'helpers/*.php',
     ),
     #'mount' => array('Tyrell' => '/musicmaster/index'), // mount in example resources at URL /nexus
     #'cache' => new Tonic\MetadataCacheFile('/tmp/tonic.cache') // use the metadata cache

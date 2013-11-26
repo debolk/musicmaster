@@ -8,6 +8,16 @@ class MJSPlayer extends Tonic\Resource {
     static $capabilities = array('mjs');
 
     /**
+     * Check if user is authorized to use the api
+     */
+    public function loggedIn($resource)
+    {
+        $res = OAuth2Helper::IsUnauthorized($resource);
+        if($res)
+            throw $res;
+    }
+
+    /**
      * Don't show functions if the player is not enabled
      */
     function init()
@@ -76,6 +86,7 @@ class MJSPlayer extends Tonic\Resource {
      * @init
      * @func status
      * @priority 1
+     * @loggedIn mp3control
      */
     function putStatus($name, $func)
     {
@@ -96,8 +107,8 @@ class MJSPlayer extends Tonic\Resource {
      * Returns a description of the currently playing song
      * @method GET
      * @init
-     * @func current
      * @priority 1
+     * @func current
      */
     function getCurrent($name, $func)
     {
@@ -122,6 +133,7 @@ class MJSPlayer extends Tonic\Resource {
      * @init
      * @func current
      * @priority 1
+     * @loggedIn mp3control
      */
     function postCurrent($name, $func)
     {
@@ -144,6 +156,7 @@ class MJSPlayer extends Tonic\Resource {
      * @init
      * @func current
      * @priority 1
+     * @loggedIn mp3control
      */
     function putCurrent($name, $func)
     {
@@ -151,7 +164,7 @@ class MJSPlayer extends Tonic\Resource {
         $uid = explode('/', $json->uri);
         $uid = $uid[count($uid) - 1];
 
-        if($this->request->data != $this->app->uri('MJSPlayer', array($name, 'playlist', $uid)))
+        if($json->uri != $this->app->uri('MJSPlayer', array($name, 'playlist', $uid)))
             throw new Tonic\ConditionException;
 
         $data = json_encode(array('uid' => $uid));
@@ -196,6 +209,7 @@ class MJSPlayer extends Tonic\Resource {
      * @func playlist
      * @item
      * @priority 2
+     * @loggedIn mp3control
      */
     function deletePlaylist($name, $func)
     {
@@ -210,6 +224,7 @@ class MJSPlayer extends Tonic\Resource {
      * @func playlist
      * @item
      * @priority 2
+     * @loggedIn mp3control
      */
     function postPlaylist($name, $func)
     {
@@ -264,6 +279,7 @@ class MJSPlayer extends Tonic\Resource {
      * @init
      * @func playlist
      * @priority 1
+     * @loggedIn mp3control
      */
     function deletePlaylistItem($name, $func, $item)
     {
@@ -280,6 +296,7 @@ class MJSPlayer extends Tonic\Resource {
      * @init
      * @func playlist
      * @priority 1
+     * @loggedIn mp3control
      */
     function postPlaylistItem($name, $func, $item)
     {
