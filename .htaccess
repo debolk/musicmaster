@@ -1,4 +1,5 @@
 SetEnv OAUTH2_RESOURCE      https://login.i.bolkhuis.nl/
 
 RewriteEngine On
+RewriteCond %{REQUEST_URI} !^/mjs5
 RewriteRule .* index.php [L]
