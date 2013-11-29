@@ -77,6 +77,8 @@ class MJSPlayer extends Tonic\Resource {
     function getStatus($name, $func)
     {
         $json = json_decode($this->request('status'));
+        if(!$json)
+            throw new Tonic\Exception("Bad gateway", 502);
         return json_encode($json);
     }
 
@@ -113,6 +115,8 @@ class MJSPlayer extends Tonic\Resource {
     function getCurrent($name, $func)
     {
         $data = json_decode($this->request('current'));
+        if(!$data)
+            throw new Tonic\Exception("Bad gateway", 502);
 
         if(!isset($data->file))
             return '{}';
@@ -184,6 +188,8 @@ class MJSPlayer extends Tonic\Resource {
     function getPlaylist($name, $func)
     {
         $data = json_decode($this->request('playlist'));
+        if(!$data)
+            throw new Tonic\Exception("Bad gateway", 502);
         if(!isset($data->files))
             throw new Tonic\Exception;
 
@@ -254,6 +260,8 @@ class MJSPlayer extends Tonic\Resource {
     function getPlaylistItem($name, $func, $item)
     {
         $data = json_decode($this->request('playlist'));
+        if(!$data)
+            throw new Tonic\Exception("Bad gateway", 502);
         if(!isset($data->files))
             throw new Tonic\Exception;
 
