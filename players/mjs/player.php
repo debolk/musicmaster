@@ -302,11 +302,15 @@ class MJSPlayer extends Tonic\Resource {
     {
         $item = str_replace('/', '', $item);
 
-        $url = $this->request->data;
+        $json = json_decode($this->request->data);
+        $url = $json->uri;
         $song = $this->getObject($url);
 
-        if($song->type != 'song')
+        if(!$song || $song->type != 'song')
+        {
+            return $url;
             throw new Tonic\ConditionException;
+        }
 
         $data = array(
             'location' => $song->location,
@@ -322,7 +326,7 @@ class MJSPlayer extends Tonic\Resource {
      */
     function request($url, $method = 'GET', $data = '')
     {
-	$curl = curl_init($this->settings['url'] . $url);
+    	$curl = curl_init($this->settings['url'] . $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
         if($data != '')
@@ -342,7 +346,7 @@ class MJSPlayer extends Tonic\Resource {
      */
     function getObject($url)
     {
-        $curl = curl_init($url);
+        $curl = curl_init(str_replace(' ','%20',$url));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         return json_decode(curl_exec($curl));
     }

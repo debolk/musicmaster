@@ -46,6 +46,9 @@ Class FilePlugin extends Tonic\Resource {
         if($type != 'html')
             $file .= '.' . $type;
 
+        $file = urldecode($_SERVER['REQUEST_URI']);
+        $file = substr($file, strpos($file, 'browse/') + 6);
+
         //Check if requested url is within the base path
         $basepath = realpath($this->settings['path']);
         $path = $basepath;
