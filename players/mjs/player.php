@@ -316,8 +316,7 @@ class MJSPlayer extends Tonic\Resource {
 
         if(!$song || $song->type != 'song')
         {
-            return $url;
-            throw new Tonic\ConditionException;
+            throw new Tonic\ConditionException($url);
         }
 
         $data = array(
