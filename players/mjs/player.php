@@ -247,7 +247,7 @@ class MJSPlayer extends Tonic\Resource {
         );
         $this->request('playlist', 'POST', json_encode($data));
 
-        return '';
+        return getPlaylist($name, $func);
     }
 
     /**
@@ -325,7 +325,7 @@ class MJSPlayer extends Tonic\Resource {
         );
         $this->request('playlist/' . $item, 'POST', json_encode($data));
 
-        return '';
+        return getPlaylist($name, $func);
     }
 
     /**
