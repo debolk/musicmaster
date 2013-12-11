@@ -32,6 +32,39 @@ Class FilePlugin extends Tonic\Resource {
     }
 
     /**
+     * Search the filesystem
+     * @method GET
+     * @func search
+     * @priority 1
+     */
+    function search($name, $func, $query = '')
+    {
+        if(strlen($query) <= 3)
+            return '[]';
+        $matches = array();
+        $query = escapeshellarg($query);
+        $command = "locate -l 100 -id /pub/mp3/mp3.db " . $query;
+
+        exec($command, $matches);
+
+        $real = function($path) {
+            if(is_dir($path))
+                return $path;
+            return readlink($path);
+        };
+        $matches = array_map($real, $matches);
+        $matches = array_values(array_unique($matches));
+
+        $urlize = function($path) use ($name){
+            $base = $this->app->uri(__CLASS__, array($name, 'browse'));
+            return str_replace('/pub/mp3', $base, $path);
+        };
+        $matches = array_map($urlize, $matches);
+
+        return json_encode($matches, JSON_PRETTY_PRINT);
+    }
+
+    /**
      * Browse in the filesystem
      * @method GET
      * @func browse
