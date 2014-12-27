@@ -158,4 +158,17 @@ Class FilePlugin extends Tonic\Resource {
     {
         if ($verb != $this->func) throw new Tonic\ConditionException;
     }
+
+    /**
+         * @method OPTIONS
+         * Returns acceptible methods
+         */
+        public function options()
+        {
+                $response = new Tonic\Response(200, "");
+                $response->allow = "GET,HEAD,POST,PUT,PATCH";
+        $response->accessControlAllowMethods = "GET,HEAD,POST,PUT,PATCH";
+        $response->accessControlAllowHeaders = "Content-Type";
+                return $response;
+        }
 }
