@@ -17,6 +17,20 @@ Class FilePlugin extends Tonic\Resource {
     }
 
     /**
+     * Urlencodes a path without encoding the slashes
+     */
+    function encode_path($path){
+        $parts = explode('/', $path);
+        $removed = array();
+        if(substr($parts[0], 0, 4) == "http")
+            $removed = array_splice($parts, 0, 1);
+
+        $encoded = array_map(urlencode,$parts);
+        $result = array_merge($removed, $encoded);
+        return implode('/', $result);
+    }
+
+    /**
      * Returns some information about this plugin
      * @method GET
      * @func
@@ -60,6 +74,7 @@ Class FilePlugin extends Tonic\Resource {
             return str_replace('/pub/mp3', $base, $path);
         };
         $matches = array_map($urlize, $matches);
+        $matches = array_map($this->encode_path, $matches);
 
         return json_encode($matches, JSON_PRETTY_PRINT);
     }
@@ -109,7 +124,7 @@ Class FilePlugin extends Tonic\Resource {
                 $entry .= '/' . $filename;
                 if(is_dir($path . '/' . $filename))
                     $entry .= '/';
-                $entries[] = $entry;
+                $entries[] = $this->encode_path($entry);
             }
 
             $res = array();
