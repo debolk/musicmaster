@@ -112,7 +112,9 @@ Class FilePlugin extends Tonic\Resource {
 
             $res = array();
             $res['type'] = 'directory';
-            $res['name'] = 'unknown';
+            $res['name'] = basename($path);
+            if($path == $basepath)
+                $res['name'] = $name;
             $res['entries'] = $entries;
             return json_encode($res, JSON_PRETTY_PRINT);
         }
