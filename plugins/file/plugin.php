@@ -101,6 +101,8 @@ Class FilePlugin extends Tonic\Resource {
             {
                 if($filename[0] == '.')
                     continue;
+                if(!stat($path . '/' . $filename))
+                    continue;
                 $entry = $this->app->uri(__CLASS__, array($name, $func));
                 if($file != '')
                     $entry .= '/' . $file;
