@@ -19,6 +19,8 @@ class Song {
         $res["title"] = $this->title;
         $res["artist"] = $this->artist;
         $res["location"] = $this->location;
+        if(isset($this->length))
+            $res['length'] = $this->length;
         return json_encode($res);
     }
 }

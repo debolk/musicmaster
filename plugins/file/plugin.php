@@ -143,6 +143,7 @@ Class FilePlugin extends Tonic\Resource {
             $tags = $this->getID3Tags($path);
             $res = new Song($path, $tags['title'], $tags['artist'], $path); 
             $res->album = $tags['album'];
+            $res->length = $tags['length'];
             return $res->toJSON();
         }
 
@@ -154,11 +155,12 @@ Class FilePlugin extends Tonic\Resource {
      */
     function getID3Tags($filename)
     {
-        exec("mp3info -p \"%t\n%a\n%l\n\" " . escapeshellarg($filename), $tags);
+        exec("mp3info -p \"%t\n%a\n%l\n%S\n\" " . escapeshellarg($filename), $tags);
         $res = array(
             'title' => $tags[0],
             'artist' => $tags[1],
             'album' => $tags[2],
+            'length' => (int)$tags[3],
         );
         return $res;
     }
