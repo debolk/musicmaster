@@ -25,7 +25,7 @@ Class FilePlugin extends Tonic\Resource {
         if(substr($parts[0], 0, 4) == "http")
             $removed = array_splice($parts, 0, 1);
 
-        $encoded = array_map(urlencode,$parts);
+        $encoded = array_map("urlencode",$parts);
         $result = array_merge($removed, $encoded);
         return implode('/', $result);
     }
