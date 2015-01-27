@@ -100,8 +100,6 @@ class MJSPlayer extends Tonic\Resource {
 
         $request = json_encode(array('status' => $data->status));
 
-	print_r($this->request('status', 'POST', $request));
-
         return $this->getStatus($name, $func);
     }
 
@@ -201,6 +199,22 @@ class MJSPlayer extends Tonic\Resource {
             $item['url'] = $this->app->uri('MJSPlayer', array($name, 'playlist', $file->uid));
             if($file->tag != '')
                 $item['song'] = $file->tag;
+            else
+            {
+                $plugins = $this->conf["plugins"];
+                foreach($plugins as $pluginname => $plugin)
+                {
+                    if($pluginname == 'capabilities')
+                        continue;
+
+                    if($plugin['path'] != substr($file->location, 0, strlen($plugin['path'])))
+                        continue;
+
+                    $item['song'] = $this->app->uri($plugin['class'], array($pluginname, 'browse')) . substr($file->location, strlen($plugin['path']));
+                    break;
+                }
+
+            }
             $item['location'] = $file->location;
             $res['items'][] = $item;
         }
