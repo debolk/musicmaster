@@ -99,6 +99,7 @@ class MJSPlayer extends Tonic\Resource {
             throw new Tonic\ConditionException;
 
         $request = json_encode(array('status' => $data->status));
+        $this->request('status', 'POST', $request);
 
         return $this->getStatus($name, $func);
     }
