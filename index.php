@@ -83,7 +83,7 @@ catch (Tonic\UnauthorizedException $e) {
 } catch (Tonic\Exception $e) {
     $error = json_encode([
         'error' => $e->getMessage(),
-        'exception' => $e,
+        'exception' => (string)$e,
     ]);
     $response = new Tonic\Response($e->getCode(), $error);
 }
