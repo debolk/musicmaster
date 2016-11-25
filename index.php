@@ -6,25 +6,25 @@ require_once 'lib/tonic/src/Tonic/Autoloader.php';
 $conf = array();
 
 // Scans a folder for capabilities and adds them to the config file
-function addCapabilities($folder, &$conf) 
+function addCapabilities($folder, &$conf)
 {
     $plugins = scandir($folder . '/');
     foreach($plugins as $plugin)
     {
         if($plugin[0] == '.')
             continue;
-    
+
         if(!is_dir($folder . '/' . $plugin . '/capabilities/'))
             continue;
-    
+
         $capabilities = scandir($folder . '/' . $plugin . '/capabilities/');
         foreach($capabilities as $capability)
         {
             if($capability[0] == '.')
                 continue;
-    
+
             require_once($folder . '/' . $plugin . '/capabilities/' . $capability);
-    
+
             $class = explode('.',$capability)[0];
             $name = $class::$name;
             $conf[$folder]['capabilities'][$name] = $class;
