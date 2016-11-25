@@ -76,21 +76,14 @@ try {
     $response = $resource->exec();
 
 }
-catch (Tonic\NotFoundException $e) {
-    $error = json_encode([
-        'error' => $e->getMessage(),
-        'stacktrace' => $e->getTrace(),
-    ]);
-    $response = new Tonic\Response(404, $error);
-
-} catch (Tonic\UnauthorizedException $e) {
+catch (Tonic\UnauthorizedException $e) {
     $response = new Tonic\Response(401, $e->getMessage());
     $response->wwwAuthenticate = 'Basic realm="My Realm"';
 
 } catch (Tonic\Exception $e) {
     $error = json_encode([
         'error' => $e->getMessage(),
-        'stacktrace' => $e->getTrace(),
+        'exception' => $e,
     ]);
     $response = new Tonic\Response($e->getCode(), $error);
 }
