@@ -57,7 +57,7 @@ Class FilePlugin extends Tonic\Resource {
             return '[]';
         $matches = array();
         $query = escapeshellarg($query);
-        $command = 'grep ' . $query . '/pub/mp3/index';
+        $command = 'grep ' . $query . ' /pub/mp3/index';
 
         exec($command, $matches);
 
