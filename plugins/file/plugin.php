@@ -141,7 +141,7 @@ Class FilePlugin extends Tonic\Resource {
         {
             //Create new songinfo
             $tags = $this->getID3Tags($path);
-            $res = new Song($path, $tags['title'], $tags['artist'], $path); 
+            $res = new Song($path, $tags['title'], $tags['artist'], $path);
             $res->album = $tags['album'];
             $res->length = $tags['length'];
             return $res->toJSON();
