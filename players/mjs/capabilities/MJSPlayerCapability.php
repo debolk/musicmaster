@@ -52,6 +52,9 @@ class MJSPlayerCapability extends Tonic\Resource {
                 'description' => 'Append a song to the playlist before this item',
                 'data' => '{ "uri": "[song uri]" }',
             ),
+            'DELETE' => array(
+                'description' => 'Remove this song from the playlist',
+            ),
         ),
     );
 

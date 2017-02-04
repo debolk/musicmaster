@@ -20,5 +20,5 @@ function SongController()
             },
             failure: failure,
         });
-    }
+    };
 }
