@@ -71,7 +71,7 @@ Class FilePlugin extends Tonic\Resource {
 
         $urlize = function($path) use ($name){
             $base = $this->app->uri(__CLASS__, array($name, 'browse'));
-            return $base . DIRECTORY_SEPARATOR . $path;
+            return str_replace('/pub/mp3', $base, $path);
         };
         $matches = array_map($urlize, $matches);
         $matches = array_map($this->encode_path, $matches);
