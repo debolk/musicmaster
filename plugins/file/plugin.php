@@ -57,7 +57,7 @@ Class FilePlugin extends Tonic\Resource {
             return '[]';
         $matches = array();
         $query = escapeshellarg($query);
-        $command = "locate -l 100 -id /pub/mp3/mp3.db " . $query;
+        $command = 'grep ' . $query . '/pub/mp3/index';
 
         exec($command, $matches);
 
@@ -71,7 +71,7 @@ Class FilePlugin extends Tonic\Resource {
 
         $urlize = function($path) use ($name){
             $base = $this->app->uri(__CLASS__, array($name, 'browse'));
-            return str_replace('/pub/mp3', $base, $path);
+            return $base . DIRECTORY_SEPARATOR . $path;
         };
         $matches = array_map($urlize, $matches);
         $matches = array_map($this->encode_path, $matches);
